@@ -1,0 +1,89 @@
+// 1) Datasource: aponta pro Postgres do Supabase
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// 2) Client do Prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ===== MODELOS =====
+// Ideia: já modelamos o mínimo p/ psicóloga usar:
+// - Tenant: a “clínica/consultório” (mesmo que seja 1 pessoa)
+// - Patient: cadastro do paciente
+// - Service: tipos de sessão (50min, 90min, online/presencial)
+// - Appointment: agendamento em si 
+
+model Tenant {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  // No futuro: ownerId (quando colocarmos Auth)
+  createdAt DateTime @default(now())
+
+  // Relações
+  patients     Patient[]
+  services     Service[]
+  // appointments: criaremos via Service/Patient
+  appointments Appointment[]
+}
+
+model Patient {
+  id       String @id @default(cuid())
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id])
+
+  name      String
+  email     String?
+  phone     String?
+  birthDate DateTime?
+
+  createdAt DateTime @default(now())
+
+  appointments Appointment[]
+}
+
+model Service {
+  id       String @id @default(cuid())
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id])
+
+  name       String // "Sessão individual"
+  duration   Int // minutos (ex: 50)
+  priceCents Int // preço em centavos
+  online     Boolean @default(true)
+  active     Boolean @default(true)
+
+  createdAt DateTime @default(now())
+
+  appointments Appointment[]
+}
+
+model Appointment {
+  id       String @id @default(cuid())
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id])
+
+  patientId String
+  patient   Patient @relation(fields: [patientId], references: [id])
+
+  serviceId String
+  service   Service @relation(fields: [serviceId], references: [id])
+
+  startsAt DateTime
+  endsAt   DateTime
+
+  status    ApptStatus @default(SCHEDULED) // SCHEDULED | DONE | CANCELED | NO_SHOW
+  createdAt DateTime   @default(now())
+}
+
+enum ApptStatus {
+  SCHEDULED
+  DONE
+  CANCELED
+  NO_SHOW
+}
+
+// Obs: Payment e Notes virão em etapas futuras
