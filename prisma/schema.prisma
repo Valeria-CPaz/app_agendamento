@@ -1,4 +1,4 @@
-// 1) Datasource: aponta pro Postgres do Supabase
+// 1) Aponta pro Postgres do Supabase
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -10,17 +10,16 @@ generator client {
 }
 
 // ===== MODELOS =====
-// Ideia: já modelamos o mínimo p/ psicóloga usar:
-// - Tenant: a “clínica/consultório” (mesmo que seja 1 pessoa)
+// - Tenant: a “clínica/consultório”
 // - Patient: cadastro do paciente
 // - Service: tipos de sessão (50min, 90min, online/presencial)
-// - Appointment: agendamento em si 
+// - Appointment: agendamento
 
 model Tenant {
   id        String   @id @default(cuid())
   name      String
   slug      String   @unique
-  // No futuro: ownerId (quando colocarmos Auth)
+  users     User[]
   createdAt DateTime @default(now())
 
   // Relações
@@ -86,4 +85,49 @@ enum ApptStatus {
   NO_SHOW
 }
 
-// Obs: Payment e Notes virão em etapas futuras
+// ===== Auth.js Models =====
+model User {
+  id       String  @id @default(cuid())
+  email    String  @unique
+  name     String?
+  password String? // opcional (usaremos credencial simples)
+  tenantId String?
+  tenant   Tenant? @relation(fields: [tenantId], references: [id])
+
+  sessions Session[]
+  accounts Account[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expires      DateTime
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}

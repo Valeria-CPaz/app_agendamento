@@ -3,6 +3,8 @@
 // Objetivo: criar um Tenant "Psicóloga da Val", alguns serviços e 2 pacientes
 
 import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcryptjs";
+
 const prisma = new PrismaClient();
 
 async function main() {
@@ -80,6 +82,20 @@ async function main() {
       startsAt,
       endsAt,
       status: "SCHEDULED",
+    },
+  });
+
+  // 5) Usuário admin para login
+  const password = await bcrypt.hash("admin", 10); // senha será: admin
+  await prisma.user.upsert({
+    where: { email: "admin@psico.app" },
+    update: {},
+    create: {
+      email: "admin@psico.app",
+      name: "Admin",
+      password,
+      tenantId: tenant.id,
+      // outros campos obrigatórios do seu modelo User (ex: role: "ADMIN")
     },
   });
 

@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 export default async function DebugPage() {
   // 1) Carregar tenant padrão
   const tenant = await prisma.tenant.findUnique({
-    where: { slug: "psicologa-da-val" },
+    where: { slug: "Psicóloga da Val" },
     include: {
       services: true,
       patients: {
