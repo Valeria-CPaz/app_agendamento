@@ -1,45 +1,60 @@
-import { Tabs } from 'expo-router';
+import { Tabs, Stack } from 'expo-router';
 import React from 'react';
-import { Platform } from 'react-native';
+import Toast from "react-native-toast-message";
+import { theme } from '../../theme/theme';
+import { Contact, ClipboardMinus, CalendarRange, Settings } from 'lucide-react-native';
 
-import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import TabBarBackground from '@/components/ui/TabBarBackground';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
+    <>
+      <Tabs
+        screenOptions={{
+          headerShown: false,
+          tabBarActiveTintColor: theme.primary,        // Aba ativa = azul petróleo
+          tabBarInactiveTintColor: theme.border,    // Abas inativas = cinza intermediário
+          tabBarStyle: {
+            backgroundColor: theme.surface,            // Fundo claro
+            borderTopColor: theme.border,
+            borderTopWidth: 1,
+            height: 60,
           },
-          default: {},
-        }),
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          tabBarLabelStyle: {
+            fontSize: 12,
+            fontWeight: '600',                         // Deixa o nome da aba mais visível
+          },
         }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
-        }}
-      />
-    </Tabs>
+      >
+        <Tabs.Screen
+          name="patients"
+          options={{
+            title: 'Pacientes',
+            tabBarIcon: ({ color, size }) => <Contact color={color} size={size} />
+          }}
+        />
+        <Tabs.Screen
+          name="schedule"
+          options={{
+            title: 'Agenda',
+            tabBarIcon: ({ color, size }) => <CalendarRange color={color} size={size} />
+          }}
+        />
+        <Tabs.Screen
+          name="reports"
+          options={{
+            title: 'Relatórios',
+            tabBarIcon: ({ color, size }) => <ClipboardMinus color={color} size={size} />
+          }}
+        />
+        <Tabs.Screen
+          name="settings"
+          options={{
+            title: 'Configurações',
+            tabBarIcon: ({ color, size }) => <Settings color={color} size={size} />
+          }}
+        />
+      </Tabs>
+      <Toast />
+    </>
   );
 }
