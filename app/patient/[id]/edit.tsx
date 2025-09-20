@@ -2,9 +2,9 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { StyleSheet,Text, View } from "react-native";
 import Toast from "react-native-toast-message";
-import { updatePatient, getPatientById } from "../../services/patientService";
-import { theme } from "../../theme/theme";
-import { Patient } from "../../types/patient";
+import { updatePatient, getPatientById } from "@/services/patientService";
+import { theme } from "@/theme/theme";
+import { Patient } from "@/types/patient";
 import PatientForm from "@/components/PatientForm";
 
 

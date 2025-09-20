@@ -1,4 +1,4 @@
-import { Appointment } from "../app/schedule";
+import { Appointment } from "../types/appointment";
 
 export interface GetAppointmentsParams {
   start: string; // "DD-MM-YYYY"

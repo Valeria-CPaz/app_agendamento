@@ -2,10 +2,10 @@ import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useState } from "react";
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-toast-message";
-import { formatCPF, formatPhone } from "../../utils/formatters";
-import { getPatientById, removePatient } from "../../services/patientService";
-import { theme } from "../../theme/theme";
-import { Patient } from "../../types/patient";
+import { formatCPF, formatPhone } from "@/utils/formatters";
+import { getPatientById, removePatient } from "@/services/patientService";
+import { theme } from "@/theme/theme";
+import { Patient } from "@/types/patient";
 import { UserPen } from "lucide-react-native";
 
 export default function PatientDetailScreen() {
@@ -85,7 +85,7 @@ export default function PatientDetailScreen() {
 
     function handleEdit() {
         if (!patient) return;
-        router.push({ pathname: "/edit-patient/[id]", params: { id: patient.id } });
+        router.push({ pathname: "/patient/[id]/edit", params: { id: patient.id } });
     }
 
     if (!patient && !notFound) {

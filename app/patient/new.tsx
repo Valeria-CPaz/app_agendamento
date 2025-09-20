@@ -2,9 +2,9 @@ import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { StyleSheet, Switch, Text, TextInput, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-toast-message";
-import { addPatient } from "../services/patientService";
-import { theme } from "./../theme/theme";
-import { Patient } from "./../types/patient";
+import { addPatient } from "@/services/patientService";
+import { theme } from "@/theme/theme";
+import { Patient } from "@/types/patient";
 import PatientForm from "@/components/PatientForm";
 
 

@@ -10,28 +10,9 @@ import {
 } from "react-native";
 import { useFocusEffect, useRouter } from "expo-router";
 import { theme } from "../../theme/theme";
-
-// ==== Types ====
-export type AppointmentStatus = "confirmed" | "pending" | "canceled" | "no_show";
-
-export interface Appointment {
-    id: string;
-    patientId: string;
-    patientName: string;
-    /** DD-MM-YYYY */
-    date: string;
-    /** HH:mm (24hs) */
-    start: string;
-    /** HH:mm (24hs) */
-    end: string;
-    status: AppointmentStatus;
-    price?: number;
-    notes?: string;
-}
-
-// === Services ===
-// get appointments from start to end inclusive
+import { Appointment, AppointmentStatus } from "@/types/appointment";
 import { getAppointments } from "../../services/appointmentService";
+
 
 const HOURS = Array.from({ length: 16 }, (_, i) => 7 + i);
 

@@ -2,7 +2,7 @@ import React, { useCallback, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Alert, ScrollView } from "react-native";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import { theme } from "../../theme/theme";
-import { Appointment } from "./index"; // reuse type if exported, or redefine here
+import { Appointment } from "../../types/appointment";
 import { getAppointmentById, deleteAppointment } from "../../services/appointmentService";
 
 export default function ScheduleDetailScreen() {

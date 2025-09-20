@@ -2,8 +2,8 @@ import React, { useMemo, useState } from "react";
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { theme } from "../../theme/theme";
+import { AppointmentStatus } from "@/types/appointment";
 
-type AppointmentStatus = "confirmed" | "pending" | "canceled" | "no_show";
 
 export default function ScheduleNewScreen() {
     const router = useRouter();
