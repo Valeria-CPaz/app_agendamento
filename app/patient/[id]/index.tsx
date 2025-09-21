@@ -1,6 +1,6 @@
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useState } from "react";
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, StyleSheet, Text, TouchableOpacity, View, Pressable } from "react-native";
 import Toast from "react-native-toast-message";
 import { formatCPF, formatPhone } from "@/utils/formatters";
 import { getPatientById, removePatient } from "@/services/patientService";
@@ -69,7 +69,7 @@ export default function PatientDetailScreen() {
                         try {
                             await removePatient(patient.id);
                             Toast.show({ type: "success", text1: "Paciente excluído!" });
-                            router.back(); // volta para a lista
+                            router.back();
                         } catch {
                             Toast.show({
                                 type: "error",
@@ -106,39 +106,40 @@ export default function PatientDetailScreen() {
             </View>
         );
     }
-
-    // patient garantido aqui
+   
     return (
         <View style={styles.container}>
             <Text style={styles.title}>
                 {patient!.name} {patient!.lastName}
             </Text>
 
-            <View style={styles.infoBlock}>
-                <Text style={styles.label}>Telefone:</Text>
-                <Text style={styles.value}>{formatPhone(patient!.phone)}</Text>
-            </View>
-
-            {patient!.email ? (
+            <View style={styles.detailsCard}>
                 <View style={styles.infoBlock}>
-                    <Text style={styles.label}>E-mail:</Text>
-                    <Text style={styles.value}>{(patient!.email || "").toLowerCase()}</Text>
+                    <Text style={styles.label}>Telefone:</Text>
+                    <Text style={styles.value}>{formatPhone(patient!.phone)}</Text>
                 </View>
-            ) : null}
 
-            {patient!.cpf ? (
+                {patient!.email ? (
+                    <View style={styles.infoBlock}>
+                        <Text style={styles.label}>E-mail:</Text>
+                        <Text style={styles.value}>{(patient!.email || "").toLowerCase()}</Text>
+                    </View>
+                ) : null}
+
+                {patient!.cpf ? (
+                    <View style={styles.infoBlock}>
+                        <Text style={styles.label}>CPF:</Text>
+                        <Text style={styles.value}>{formatCPF(patient!.cpf)}</Text>
+                    </View>
+                ) : null}
+
                 <View style={styles.infoBlock}>
-                    <Text style={styles.label}>CPF:</Text>
-                    <Text style={styles.value}>{formatCPF(patient!.cpf)}</Text>
+                    <Text style={styles.label}>Valor da sessão:</Text>
+                    <Text style={styles.value}>
+                        R$ {patient!.sessionValue}{" "}
+                        {patient!.isSocial ? "(Valor social)" : "(valor integral)"}
+                    </Text>
                 </View>
-            ) : null}
-
-            <View style={styles.infoBlock}>
-                <Text style={styles.label}>Valor da sessão:</Text>
-                <Text style={styles.value}>
-                    R$ {patient!.sessionValue}{" "}
-                    {patient!.isSocial ? "(Valor social)" : "(valor integral)"}
-                </Text>
             </View>
 
             <TouchableOpacity style={styles.editButton} onPress={handleEdit}>
@@ -156,7 +157,7 @@ export default function PatientDetailScreen() {
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, padding: 24, backgroundColor: theme.background },
+    container: { flex: 1, padding: 20, backgroundColor: theme.background },
     title: {
         fontSize: 28,
         fontWeight: "bold",
@@ -214,4 +215,12 @@ const styles = StyleSheet.create({
         alignItems: "center",
         gap: 8,
     },
+    detailsCard: {
+        backgroundColor: theme.surface,
+        borderRadius: 12,
+        borderWidth: 1,
+        borderColor: theme.border,
+        padding: 16,
+    },
+
 });

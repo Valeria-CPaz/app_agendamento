@@ -1,16 +1,22 @@
 import { useFocusEffect, useRouter } from "expo-router";
-import React, { useCallback, useMemo, useState } from "react";
-import { FlatList, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { getAllPatients } from "../../services/patientService";
-import { theme } from "../../theme/theme";
-import { Patient } from "../../types/patient";
+import React, { useCallback, useMemo, useState, useRef } from "react";
+import { FlatList, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View, Keyboard } from "react-native";
+import { getAllPatients } from "@/services/patientService";
+import { theme } from "@/theme/theme";
+import { Patient } from "@/types/patient";
 import { capitalize, formatPhone } from "@/utils/formatters";
-import { UserPen } from 'lucide-react-native';
+import { useHeaderOffset } from "@/lib/ui/layout";
+
 
 export default function PatientsScreen() {
     const [patients, setPatients] = useState<Patient[]>([]);
     const [query, setQuery] = useState("");
-    const router = useRouter(); // expo-router hook for navigation
+    const router = useRouter();
+    const headerOffset = useHeaderOffset();
+
+    const listRef = useRef<FlatList<Patient>>(null);
+    const inputRef = useRef<TextInput>(null);
+
 
     // Load patients whenever this screen gains focus
     useFocusEffect(
@@ -44,7 +50,8 @@ export default function PatientsScreen() {
     const filtered = useMemo(() => {
         const q = normalize(query);
         if (!q) return patients;
-        return patients.filter((p) => normalize(p.name).includes(q));
+        return patients.filter((p) =>
+            normalize(`${p.name} ${p.lastName ?? ""}`).includes(q));
     }, [patients, query]);
 
     const showEmpty =
@@ -52,9 +59,7 @@ export default function PatientsScreen() {
         (patients.length > 0 && filtered.length === 0);
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Pacientes</Text>
-
+        <View style={[styles.container, { paddingTop: headerOffset, paddingHorizontal: 16 }]}>
             {/* Search input */}
             <View style={styles.searchRow}>
                 <TextInput
@@ -121,21 +126,20 @@ export default function PatientsScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 20,
         backgroundColor: theme.background,
     },
 
     title: {
-        fontSize: 28,
+        flex: 1,
+        fontSize: 22,
         fontWeight: "bold",
-        marginBottom: 16,
         color: theme.primary,
     },
 
     searchRow: {
         flexDirection: "row",
         alignItems: "center",
-        backgroundColor: theme.surface,
+        backgroundColor: theme.background,
         borderRadius: 10,
         paddingHorizontal: 12,
         marginBottom: 12,
@@ -148,6 +152,7 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         fontSize: 16,
         color: theme.text,
+        backgroundColor: theme.background,
     },
 
     clearBtn: {
@@ -170,7 +175,7 @@ const styles = StyleSheet.create({
     },
 
     addButtonText: {
-        color: theme.surface,
+        color: theme.background,
         fontWeight: "bold",
         fontSize: 18,
     },

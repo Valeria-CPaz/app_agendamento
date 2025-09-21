@@ -1,27 +1,51 @@
-import { Tabs, Stack } from 'expo-router';
 import React from 'react';
+import { Tabs, usePathname } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { StatusBar } from 'expo-status-bar';
 import Toast from "react-native-toast-message";
 import { theme } from '../../theme/theme';
-import { Contact, ClipboardMinus, CalendarRange, Settings } from 'lucide-react-native';
-
+import { Contact, ClipboardMinus, CalendarRange, Settings, LogOut } from 'lucide-react-native';
+import { View, Pressable } from 'react-native';
+import AppHeader from '@/components/AppHeader';
 
 export default function TabLayout() {
+  const pathname = usePathname();
+
+  const headerTitle = React.useMemo(() => {
+    if (!pathname) return "Psico App";
+    if (pathname.includes("/patients")) return "Pacientes";
+    if (pathname.includes("/schedule")) return "Agenda";
+    if (pathname.includes("/reports")) return "Relatórios";
+    if (pathname.includes("/settings")) return "Configurações";
+    return "Psico App";
+
+  }, [pathname]);
+
   return (
-    <>
+    <View style={{ flex: 1 }}>
+      <StatusBar style="dark" backgroundColor={theme.background} />
+      <AppHeader
+        title={headerTitle}
+        rightComponent={
+          <Pressable onPress={() => alert("Logout")}>
+            <LogOut color={theme.primary} />
+          </Pressable>
+        }
+      />
       <Tabs
         screenOptions={{
           headerShown: false,
-          tabBarActiveTintColor: theme.primary,        // Aba ativa = azul petróleo
-          tabBarInactiveTintColor: theme.border,    // Abas inativas = cinza intermediário
+          tabBarActiveTintColor: theme.primary,
+          tabBarInactiveTintColor: theme.border,
           tabBarStyle: {
-            backgroundColor: theme.surface,            // Fundo claro
+            backgroundColor: theme.background,
             borderTopColor: theme.border,
             borderTopWidth: 1,
             height: 60,
           },
           tabBarLabelStyle: {
             fontSize: 12,
-            fontWeight: '600',                         // Deixa o nome da aba mais visível
+            fontWeight: '600',
           },
         }}
       >
@@ -55,6 +79,6 @@ export default function TabLayout() {
         />
       </Tabs>
       <Toast />
-    </>
+    </View>
   );
 }

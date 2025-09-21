@@ -1,5 +1,5 @@
 // AppointmentStatus represents the lifecycle of a session on the calendar.
-export type AppointmentStatus = "confirmed" | "pending" | "canceled" | "no_show";
+export type AppointmentStatus = "confirmado" | "pendente" | "cancelado" | "faltou";
 
 // Appointment is the core entity rendered on the weekly grid and detail screens.
 // Dates use "DD-MM-YYYY"; times use "HH:mm" in 24h format.

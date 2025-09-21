@@ -23,29 +23,46 @@ export default function RootLayout() {
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack
         screenOptions={{
-          headerStyle: { backgroundColor: theme.surface },
-          headerTitleStyle: { color: theme.primary },
+          headerShown: true,
+          headerStyle: { backgroundColor: theme.background },
           headerTintColor: theme.primary,
+          headerTitleStyle: { fontWeight: "700" },
+          headerShadowVisible: false,
+          contentStyle: { backgroundColor: theme.surface },
         }}
       >
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 
         <Stack.Screen
-          name="patient/[id]"
+          name="patient/[id]/index"
           options={{
             title: "",
             headerBackTitle: "Voltar",
           }}
         />
         <Stack.Screen
-          name="add-patient/[id]"
+          name="patient/new"
           options={{
             title: "",
             headerBackTitle: "Voltar",
           }}
         />
         <Stack.Screen
-          name="edit-patient/[id]"
+          name="patient/[id]/edit"
+          options={{
+            title: "",
+            headerBackTitle: "Voltar",
+          }}
+        />
+        <Stack.Screen
+          name="schedule/new"
+          options={{
+            title: "",
+            headerBackTitle: "Voltar",
+          }}
+        />
+        <Stack.Screen
+          name="schedule/[id]"
           options={{
             title: "",
             headerBackTitle: "Voltar",
@@ -54,7 +71,7 @@ export default function RootLayout() {
 
         <Stack.Screen name="+not-found" />
       </Stack>
-      <StatusBar style="auto" />
+      <StatusBar style="dark" backgroundColor={theme.background} />
       <Toast />
     </ThemeProvider>
   );

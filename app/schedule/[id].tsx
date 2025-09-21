@@ -1,9 +1,9 @@
 import React, { useCallback, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Alert, ScrollView } from "react-native";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
-import { theme } from "../../theme/theme";
-import { Appointment } from "../../types/appointment";
-import { getAppointmentById, deleteAppointment } from "../../services/appointmentService";
+import { theme } from "@/theme/theme";
+import { Appointment } from "@/types/appointment";
+import { getAppointmentById, deleteAppointment } from "@/services/appointmentService";
 
 export default function ScheduleDetailScreen() {
     const router = useRouter();
@@ -53,7 +53,9 @@ export default function ScheduleDetailScreen() {
 
     function handleEdit() {
         if (!item) return;
-        router.push({ pathname: "/schedule/new", params: { ...item, edit: "1" } });
+        router.push({
+            pathname: "/schedule/new", params: { ...item, price: String(item.price ?? ""), edit: "1" }
+        });
     }
 
     if (loading) {
@@ -96,7 +98,7 @@ export default function ScheduleDetailScreen() {
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: theme.background, padding: 16 },
+    container: { flex: 1, backgroundColor: theme.background, padding: 20 },
     title: { fontSize: 22, fontWeight: "bold", color: theme.primary, marginBottom: 12 },
     info: { fontSize: 16, color: theme.text, marginBottom: 8 },
 

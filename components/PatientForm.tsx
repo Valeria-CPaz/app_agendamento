@@ -4,6 +4,7 @@ import Toast from "react-native-toast-message";
 import { Patient } from "../types/patient";
 import { theme } from "../theme/theme";
 import { isValidCPF, isValidEmail, isValidPhone } from "../utils/formatters";
+import { formatPhone } from "../utils/formatters";
 
 type PatientFormProps = {
     initialValues?: Partial<Patient>;               // Pre-filled values when editing
@@ -87,14 +88,14 @@ export default function PatientForm({ initialValues = {}, onSubmit, onCancel, mo
             <TextInput
                 style={styles.input}
                 placeholder="Telefone"
-                value={phone}
+                value={formatPhone(phone)}
                 onChangeText={setPhone}
                 keyboardType="phone-pad"
             />
             <TextInput
                 style={styles.input}
                 placeholder="Valor da Sessão"
-                value={sessionValue}
+                value={String(sessionValue)}
                 onChangeText={setSessionValue}
                 keyboardType="numeric"
             />

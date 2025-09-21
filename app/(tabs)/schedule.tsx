@@ -1,1 +1,1 @@
-export { default } from "../schedule/index";
+export { default } from "../schedule";
