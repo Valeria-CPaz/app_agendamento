@@ -6,6 +6,9 @@ import { Appointment, AppointmentStatus } from "@/types/appointment";
 import { createAppointment, getAppointmentById, updateAppointment } from "@/services/appointmentService";
 import { getAllPatients } from "@/services/patientService";
 import { Picker } from "@react-native-picker/picker";
+import { UserSearch, Save, X } from 'lucide-react-native';
+import Toast from "react-native-toast-message";
+
 
 const STATUS_OPTIONS: { label: string; value: AppointmentStatus }[] = [
     { label: "Confirmado", value: "confirmado" },
@@ -126,23 +129,37 @@ export default function ScheduleNewScreen() {
         };
         if (edit === "1" && form.id) {
             await updateAppointment(form.id, payload);
-            Alert.alert("Agendamento", "Sessão atualizada.");
+            Toast.show({
+                type: "success",
+                text1: "Sessão atualizada ✅",
+                position: "bottom"
+            });
+
         } else {
             await createAppointment(payload);
-            Alert.alert("Agendamento", "Sessão criada.");
+            Toast.show({
+                type: "success",
+                text1: "Sessão criada ✅",
+                position: "bottom"
+            })
+            Toast.show({
+                type: "success",
+                text1: "Sessão criada ✅",
+                position: "bottom"
+            });
         }
-        router.back(); // agenda refetches on focus
+        router.back();
     }
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>{edit === "1" ? "Editar agendamento" : "Novo agendamento"}</Text>
+            <Text style={styles.title}>{edit === "1" ? "EDITAR AGENDAMENTO" : "NOVO AGENDAMENTO"}</Text>
 
             {/* patient search (saves ID internally) */}
             <View style={{ marginBottom: 16 }}>
-                <Text style={styles.label}>Paciente</Text>
 
                 <View style={styles.searchRow}>
+                    <UserSearch size={20} color={theme.text} />
                     <TextInput
                         style={styles.searchInput}
                         placeholder="Buscar paciente por nome"
@@ -191,7 +208,6 @@ export default function ScheduleNewScreen() {
 
             {/* read-only info coming from route */}
             {/* Data */}
-            <Text style={styles.label}>Data</Text>
             {edit === "1" ? (
                 <TextInput
                     style={styles.input}
@@ -201,14 +217,14 @@ export default function ScheduleNewScreen() {
                     onChangeText={(v) => handleChange("date", v)}
                     autoCapitalize="none"
                 />
+
             ) : (
                 <View style={styles.readonly}>
-                    <Text style={styles.readonlyText}>{form.date}</Text>
+                    <Text style={styles.readonlyText}>Data da Sessão: {form.date}</Text>
                 </View>
             )}
 
-            {/* Início */}
-            <Text style={styles.label}>Início</Text>
+
             {edit === "1" ? (
                 <TextInput
                     style={styles.input}
@@ -221,12 +237,11 @@ export default function ScheduleNewScreen() {
                 />
             ) : (
                 <View style={styles.readonly}>
-                    <Text style={styles.readonlyText}>{form.start}</Text>
+                    <Text style={styles.readonlyText}>Início da Sessão: {form.start}hs</Text>
                 </View>
             )}
 
-            {/* Fim */}
-            <Text style={styles.label}>Fim</Text>
+
             {edit === "1" ? (
                 <TextInput
                     style={styles.input}
@@ -239,7 +254,7 @@ export default function ScheduleNewScreen() {
                 />
             ) : (
                 <View style={styles.readonly}>
-                    <Text style={styles.readonlyText}>{form.end}</Text>
+                    <Text style={styles.readonlyText}>Término da Sessão: {form.end}hs</Text>
                 </View>
             )}
 
@@ -263,11 +278,18 @@ export default function ScheduleNewScreen() {
 
 
             <TouchableOpacity style={[styles.saveBtn, !canSave && { opacity: 0.5 }]} onPress={handleSave} disabled={!canSave}>
-                <Text style={styles.saveTxt}>Salvar</Text>
+                <View style={styles.buttonItems}>
+                    <Save size={25} color={theme.background} />
+                    <Text style={styles.saveTxt}>SALVAR</Text>
+                </View>
+
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.cancelBtn} onPress={() => router.back()}>
-                <Text style={styles.cancelTxt}>Cancelar</Text>
+                <View style={styles.buttonItems}>
+                    <X size={25} color={theme.background} />
+                    <Text style={styles.cancelTxt}>CANCELAR</Text>
+                </View>
             </TouchableOpacity>
         </View>
     );
@@ -275,20 +297,21 @@ export default function ScheduleNewScreen() {
 
 const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: theme.background, padding: 20 },
-    title: { fontSize: 22, fontWeight: "700", color: theme.primary, marginBottom: 12 },
+    title: { fontSize: 22, fontWeight: "700", color: theme.primary, marginBottom: 14, marginLeft: 10 },
 
-    label: { color: theme.text, fontSize: 12, marginTop: 10, marginBottom: 6 },
+    label: { color: theme.text, fontSize: 14, marginTop: 10, marginBottom: 6 },
 
     // read-only boxes
     readonly: {
-        backgroundColor: theme.surface,
+        backgroundColor: theme.background,
         borderWidth: 1,
         borderColor: theme.border,
         borderRadius: 10,
         paddingHorizontal: 12,
         paddingVertical: 12,
+        marginBottom: 6
     },
-    readonlyText: { color: theme.text, fontSize: 14 },
+    readonlyText: { color: theme.text, fontSize: 16 },
 
     // search box
     searchRow: {
@@ -300,14 +323,14 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         paddingHorizontal: 8,
     },
-    searchInput: { flex: 1, paddingVertical: 10, color: theme.text },
+    searchInput: { flex: 1, paddingVertical: 10, color: theme.text, fontSize: 16 },
     clearBtn: {
         paddingHorizontal: 8,
         paddingVertical: 6,
         borderRadius: 8,
         backgroundColor: theme.surface,
     },
-    clearTxt: { color: theme.text, fontSize: 16, fontWeight: "600" },
+    clearTxt: { color: theme.text, fontSize: 24, fontWeight: "bold" },
 
     suggestions: {
         marginTop: 6,
@@ -329,23 +352,26 @@ const styles = StyleSheet.create({
     saveBtn: {
         marginTop: 16,
         backgroundColor: theme.primary,
-        borderRadius: 10,
-        paddingVertical: 14,
+        borderRadius: 8,
+        paddingVertical: 12,
+        paddingHorizontal: 16,
         alignItems: "center",
         borderWidth: 1,
         borderColor: theme.border,
     },
-    saveTxt: { color: theme.surface, fontWeight: "700", fontSize: 16 },
+    saveTxt: { color: theme.background, fontWeight: "bold", fontSize: 18, marginLeft: 10 },
     cancelBtn: {
         marginTop: 10,
-        backgroundColor: theme.surface,
-        borderRadius: 10,
+        backgroundColor: theme.error,
+        borderRadius: 8,
         paddingVertical: 12,
+        paddingHorizontal: 16,
         alignItems: "center",
         borderWidth: 1,
         borderColor: theme.border,
     },
-    cancelTxt: { color: theme.text, fontWeight: "600" },
+
+    cancelTxt: { color: theme.background, fontWeight: "bold", fontSize: 18, marginLeft: 6 },
 
     input: {
         backgroundColor: theme.surface,
@@ -363,6 +389,10 @@ const styles = StyleSheet.create({
         borderColor: theme.border,
         borderRadius: 10,
         overflow: "hidden",
+    },
+    buttonItems: {
+        flexDirection: "row",
+        alignItems: "center"
     },
 
 });

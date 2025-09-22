@@ -6,7 +6,7 @@ import { formatCPF, formatPhone } from "@/utils/formatters";
 import { getPatientById, removePatient } from "@/services/patientService";
 import { theme } from "@/theme/theme";
 import { Patient } from "@/types/patient";
-import { UserPen } from "lucide-react-native";
+import { UserPen, UserMinus } from "lucide-react-native";
 
 export default function PatientDetailScreen() {
     const { id } = useLocalSearchParams();
@@ -45,6 +45,7 @@ export default function PatientDetailScreen() {
                         type: "error",
                         text1: "Erro ao carregar paciente",
                         text2: "Tente novamente em instantes.",
+                        position: "bottom"
                     });
                 }
             })();
@@ -68,13 +69,14 @@ export default function PatientDetailScreen() {
                     onPress: async () => {
                         try {
                             await removePatient(patient.id);
-                            Toast.show({ type: "success", text1: "Paciente excluído!" });
+                            Toast.show({ type: "success", text1: "Paciente excluído! ✅", position: "bottom" });
                             router.back();
                         } catch {
                             Toast.show({
                                 type: "error",
                                 text1: "Falha ao excluir",
                                 text2: "Verifique sua conexão e tente novamente.",
+                                position: "bottom"
                             });
                         }
                     },
@@ -106,7 +108,7 @@ export default function PatientDetailScreen() {
             </View>
         );
     }
-   
+
     return (
         <View style={styles.container}>
             <Text style={styles.title}>
@@ -143,14 +145,17 @@ export default function PatientDetailScreen() {
             </View>
 
             <TouchableOpacity style={styles.editButton} onPress={handleEdit}>
-                <View style={styles.editButtonContent}>
-                    <UserPen size={20} color={theme.surface} />
-                    <Text style={styles.editButtonText}>Editar</Text>
+                <View style={styles.buttonItems}>
+                    <UserPen size={25} color={theme.background} />
+                    <Text style={styles.editButtonText}>EDITAR</Text>
                 </View>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.deleteButton} onPress={confirmDelete}>
-                <Text style={styles.deleteButtonText}>Excluir paciente</Text>
+                <View style={styles.buttonItems}>
+                    <UserMinus size={25} color={theme.background}/>
+                    <Text style={styles.deleteButtonText}>EXCLUIR PACIENTE</Text>
+                </View>
             </TouchableOpacity>
         </View>
     );
@@ -163,6 +168,7 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         color: theme.primary,
         marginBottom: 22,
+        marginLeft: 10
     },
     infoBlock: {
         marginBottom: 14,
@@ -190,12 +196,13 @@ const styles = StyleSheet.create({
     editButtonText: {
         color: theme.surface,
         fontWeight: "bold",
-        fontSize: 16,
+        fontSize: 18,
+        marginLeft: 8,
     },
     editButtonContent: {
         flexDirection: "row",
         alignItems: "center",
-        gap: 8,
+        gap: 6,
     },
     deleteButton: {
         backgroundColor: theme.error,
@@ -203,12 +210,13 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
         borderRadius: 8,
         alignItems: "center",
-        marginTop: 16,
+        marginTop: 10,
     },
     deleteButtonText: {
         color: theme.surface,
         fontWeight: "bold",
-        fontSize: 16,
+        fontSize: 18,
+        marginLeft: 8,
     },
     deleteButtonContent: {
         flexDirection: "row",
@@ -221,6 +229,10 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: theme.border,
         padding: 16,
+    },
+    buttonItems: {
+        flexDirection: "row",
+        alignItems: "center"
     },
 
 });

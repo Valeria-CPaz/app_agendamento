@@ -2,8 +2,10 @@ import React, { useCallback, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Alert, ScrollView } from "react-native";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import { theme } from "@/theme/theme";
+import Toast from "react-native-toast-message";
 import { Appointment } from "@/types/appointment";
 import { getAppointmentById, deleteAppointment } from "@/services/appointmentService";
+import { Trash2 , Pencil } from 'lucide-react-native';
 
 export default function ScheduleDetailScreen() {
     const router = useRouter();
@@ -34,16 +36,20 @@ export default function ScheduleDetailScreen() {
     function handleDelete() {
         if (!item) return;
         Alert.alert(
-            "Delete appointment",
-            `Are you sure you want to delete the session with "${item.patientName}"?`,
+            "Deletar agendamento",
+            `Tem certeza que deseja deletar agendamento com "${item.patientName}"?`,
             [
-                { text: "Cancel", style: "cancel" },
+                { text: "Cancelar", style: "cancel" },
                 {
-                    text: "Delete",
+                    text: "Deletar",
                     style: "destructive",
                     onPress: async () => {
                         await deleteAppointment(item.id);
-                        Alert.alert("Deleted", "Appointment removed.");
+                        Toast.show({
+                            type: "success",
+                            text1: "Agendamento deletado ✅",
+                            position: "bottom"
+                        })
                         router.back();
                     },
                 },
@@ -87,11 +93,17 @@ export default function ScheduleDetailScreen() {
             <Text style={styles.info}>Status: {item.status}</Text>
 
             <TouchableOpacity style={styles.editBtn} onPress={handleEdit}>
-                <Text style={styles.editTxt}>Edit</Text>
+                <View style={styles.buttonItems}>
+                    <Pencil size={25} color={theme.background}/>
+                    <Text style={styles.editTxt}>EDITAR</Text>
+                </View>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.deleteBtn} onPress={handleDelete}>
-                <Text style={styles.deleteTxt}>Delete</Text>
+                <View style={styles.buttonItems}>
+                    <Trash2 size={25} color={theme.background}/>
+                <Text style={styles.deleteTxt}>DELETAR</Text>
+                </View>
             </TouchableOpacity>
         </ScrollView>
     );
@@ -104,19 +116,31 @@ const styles = StyleSheet.create({
 
     editBtn: {
         backgroundColor: theme.primary,
-        borderRadius: 10,
+        borderRadius: 8,
         paddingVertical: 12,
+        paddingHorizontal: 16,
+        borderWidth: 1,
         alignItems: "center",
         marginTop: 16,
+        borderColor: theme.border,
     },
-    editTxt: { color: theme.surface, fontWeight: "bold" },
+    editTxt: { color: theme.surface, fontWeight: "bold", fontSize: 18, marginLeft: 10 },
 
     deleteBtn: {
         backgroundColor: theme.error,
-        borderRadius: 10,
+        borderRadius: 8,
         paddingVertical: 12,
+        paddingHorizontal: 16,
+        borderWidth: 1,
         alignItems: "center",
         marginTop: 10,
+        borderColor: theme.border,
     },
-    deleteTxt: { color: theme.surface, fontWeight: "bold" },
+    deleteTxt: { color: theme.surface, fontWeight: "bold", fontSize: 18, marginLeft: 10 },
+
+    buttonItems: {
+        flexDirection: "row",
+        alignItems: "center"
+    },
 });
+

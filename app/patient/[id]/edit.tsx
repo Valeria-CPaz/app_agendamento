@@ -25,7 +25,7 @@ export default function EditPatientScreen() {
 
     async function handleUpdate(updated: Patient) {
         await updatePatient(updated);
-        Toast.show({ type: "success", text1: "Paciente atualizado com sucesso!" });
+        Toast.show({ type: "success", text1: "Paciente atualizado com sucesso! ✅", position: "bottom" });
         setTimeout(() => router.back(), 800);
     }
 
@@ -33,7 +33,7 @@ export default function EditPatientScreen() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Editar Paciente</Text>
+            <Text style={styles.title}>EDITAR PACIENTE</Text>
             <PatientForm
                 mode="edit"
                 initialValues={patient}
@@ -45,7 +45,7 @@ export default function EditPatientScreen() {
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, padding: 20, backgroundColor: theme.background },
+    container: { flex: 1, padding: 20, backgroundColor: theme.background, marginLeft: 10 },
     title: { fontSize: 24, fontWeight: "bold", marginBottom: 16, color: theme.primary },
     input: {
         borderWidth: 1,

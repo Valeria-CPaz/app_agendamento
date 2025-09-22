@@ -6,6 +6,7 @@ import { theme } from "@/theme/theme";
 import { Patient } from "@/types/patient";
 import { capitalize, formatPhone } from "@/utils/formatters";
 import { useHeaderOffset } from "@/lib/ui/layout";
+import { UserSearch, UserPlus } from 'lucide-react-native';
 
 
 export default function PatientsScreen() {
@@ -62,6 +63,7 @@ export default function PatientsScreen() {
         <View style={[styles.container, { paddingTop: headerOffset, paddingHorizontal: 16 }]}>
             {/* Search input */}
             <View style={styles.searchRow}>
+                <UserSearch size={20} color={theme.text} />
                 <TextInput
                     style={styles.searchInput}
                     placeholder="Buscar por nome"
@@ -82,12 +84,17 @@ export default function PatientsScreen() {
             </View>
 
             {/* Add button */}
+
             <TouchableOpacity
                 style={styles.addButton}
                 onPress={() => router.push("/patient/new")}
             >
-                <Text style={styles.addButtonText}>Adicionar Paciente</Text>
+                <View style={styles.buttonItems}>
+                    <UserPlus size={25} color={theme.background} />
+                    <Text style={styles.addButtonText}>ADICIONAR PACIENTE</Text>
+                </View>
             </TouchableOpacity>
+
 
             {/* List patients */}
             <FlatList
@@ -127,6 +134,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: theme.background,
+        padding: 20,
     },
 
     title: {
@@ -150,6 +158,7 @@ const styles = StyleSheet.create({
     searchInput: {
         flex: 1,
         paddingVertical: 10,
+        paddingLeft: 8,
         fontSize: 16,
         color: theme.text,
         backgroundColor: theme.background,
@@ -172,12 +181,13 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         alignItems: "center",
         marginBottom: 12,
-    },
+    },       
 
     addButtonText: {
         color: theme.background,
         fontWeight: "bold",
         fontSize: 18,
+        marginLeft: 8,
     },
 
     card: {
@@ -214,5 +224,19 @@ const styles = StyleSheet.create({
         marginTop: 40,
         textAlign: "center",
         color: theme.textLight
+    },
+    icon: {
+        alignSelf: "flex-start",
+        padding: 0,
+        marginTop: -17,
+        marginBottom: 0,
+        marginLeft: 65,
+        color: theme.background,
+    },
+
+    buttonItems: {
+        flexDirection: "row",
+        alignItems: "center"
+
     },
 });

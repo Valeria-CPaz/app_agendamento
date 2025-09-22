@@ -168,7 +168,7 @@ export default function ScheduleWeekScreen() {
                     }}
                     style={styles.weekHomeBtn}
                 >
-                    <CornerDownLeft size={22} color={theme.primary} />
+                    <CornerDownLeft size={25} color={theme.primary} />
                 </TouchableOpacity>
             </View>
 
@@ -378,9 +378,9 @@ const styles = StyleSheet.create({
         minWidth: 90,
     },
     dayPillActive: { backgroundColor: theme.primary, borderColor: theme.primary },
-    dayPillText: { fontSize: 16, color: theme.text, fontWeight: "600", textAlign: "center" },
+    dayPillText: { fontSize: 18, color: theme.text, fontWeight: "600", textAlign: "center", padding: 5 },
     dayPillTextActive: { color: theme.primary },
-    dayCount: { fontSize: 16, color: theme.textLight },
+    dayCount: { fontSize: 17, color: theme.textLight },
     dayCountActive: { color: theme.primary, fontWeight: "700" },
     dayPillToday: { borderColor: theme.primary, borderWidth: 2 },
 
@@ -410,7 +410,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         padding: 8,
         borderColor: theme.border,
-        backgroundColor: theme.surface,
+        backgroundColor: theme.border,
         marginBottom: 6,
     },
     apptTitle: { color: theme.text, fontWeight: "700", marginBottom: 2 },
@@ -443,7 +443,7 @@ const styles = StyleSheet.create({
     weekHeaderTitle: {
         color: theme.primary,
         fontWeight: "700",
-        fontSize: 16,
+        fontSize: 18,
     },
     weekHomeBtn: {
         marginTop: 2,

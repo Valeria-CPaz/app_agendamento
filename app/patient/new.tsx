@@ -13,14 +13,14 @@ export default function AddPatientScreen() {
 
     async function handleCreate(newPatient: Patient) {
         await addPatient(newPatient);
-        Toast.show({ type: "success", text1: "Paciente cadastrado com sucesso!" });
+        Toast.show({ type: "success", text1: "Paciente cadastrado com sucesso!", position: "bottom" });
         setTimeout(() => router.back(), 800);
     }
 
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Adicionar Paciente</Text>
+            <Text style={styles.title}>ADICIONAR PACIENTE</Text>
             <PatientForm mode="create" onSubmit={handleCreate} onCancel={() => router.back()} />
         </View>
     );
@@ -29,5 +29,7 @@ export default function AddPatientScreen() {
 
 const styles = StyleSheet.create({
     container: { flex: 1, padding: 20, backgroundColor: theme.background },
-    title: { fontSize: 24, fontWeight: "bold", marginBottom: 16, color: theme.primary },   
+    title: { fontSize: 24, fontWeight: "bold", marginBottom: 16, color: theme.primary, marginLeft: 10 },   
 });
+
+

@@ -5,6 +5,8 @@ import { Patient } from "../types/patient";
 import { theme } from "../theme/theme";
 import { isValidCPF, isValidEmail, isValidPhone } from "../utils/formatters";
 import { formatPhone } from "../utils/formatters";
+import { Save, X } from 'lucide-react-native';
+
 
 type PatientFormProps = {
     initialValues?: Partial<Patient>;               // Pre-filled values when editing
@@ -95,8 +97,11 @@ export default function PatientForm({ initialValues = {}, onSubmit, onCancel, mo
             <TextInput
                 style={styles.input}
                 placeholder="Valor da Sessão"
-                value={String(sessionValue)}
-                onChangeText={setSessionValue}
+                value={sessionValue ? "R$ " + sessionValue : ""}
+                onChangeText={(text) => {
+                    const numeric = text.replace(/\D/g, "");
+                    setSessionValue(numeric);
+                }}
                 keyboardType="numeric"
             />
             <View style={styles.switchRow}>
@@ -110,14 +115,20 @@ export default function PatientForm({ initialValues = {}, onSubmit, onCancel, mo
             </View>
 
             <TouchableOpacity style={styles.saveButton} onPress={handleSubmit}>
-                <Text style={styles.saveButtonText}>
-                    {mode === "create" ? "Salvar paciente" : "Salvar alterações"}
-                </Text>
+                <View style={styles.buttonItems}>
+                    <Save size={25} color={theme.background} />
+                    <Text style={styles.saveButtonText}>
+                        {mode === "create" ? "SALVAR PACIENTE" : "SALVAR ALTERAÇÕES"}
+                    </Text>
+                </View>
             </TouchableOpacity>
 
             {onCancel && (
                 <TouchableOpacity style={styles.cancelButton} onPress={onCancel}>
-                    <Text style={styles.cancelButtonText}>Cancelar</Text>
+                    <View style={styles.buttonItems}>
+                        <X size={25} color={theme.background} />
+                        <Text style={styles.cancelButtonText}>CANCELAR</Text>
+                    </View>
                 </TouchableOpacity>
             )}
         </View>
@@ -125,6 +136,7 @@ export default function PatientForm({ initialValues = {}, onSubmit, onCancel, mo
 }
 
 const styles = StyleSheet.create({
+    container: { flex: 1, padding: 20, backgroundColor: theme.background, marginLeft: 10 },
     input: {
         borderWidth: 1,
         borderColor: theme.border,
@@ -149,13 +161,18 @@ const styles = StyleSheet.create({
         alignItems: "center",
         marginTop: 8,
     },
-    saveButtonText: { color: theme.surface, fontWeight: "bold", fontSize: 18 },
+    saveButtonText: { color: theme.background, fontWeight: "bold", fontSize: 18, marginLeft: 5 },
     cancelButton: {
         backgroundColor: theme.error,
         padding: 14,
         borderRadius: 8,
         alignItems: "center",
-        marginTop: 16,
+        marginTop: 10,
     },
-    cancelButtonText: { color: theme.surface, fontWeight: "bold", fontSize: 18 },
+    cancelButtonText: { color: theme.background, fontWeight: "bold", fontSize: 18, marginLeft: 5 },
+    buttonItems: {
+        flexDirection: "row",
+        alignItems: "center"
+
+    },
 });
