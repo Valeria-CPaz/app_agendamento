@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
   title: {
     flex: 1,
     textAlign: "center",
-    color: theme.primary,
+    color: theme.secondary,
     fontSize: 22,
     fontWeight: "bold",
   },

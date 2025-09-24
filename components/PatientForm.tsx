@@ -15,6 +15,11 @@ type PatientFormProps = {
     mode: "create" | "edit";                        // To customize texts
 };
 
+function formatMoney(value: number | string) {
+    const n = Number(value || 0);
+    return n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+}
+
 export default function PatientForm({ initialValues = {}, onSubmit, onCancel, mode }: PatientFormProps) {
     const [name, setName] = useState(initialValues.name || "");
     const [lastName, setLastName] = useState(initialValues.lastName || "");
@@ -60,7 +65,7 @@ export default function PatientForm({ initialValues = {}, onSubmit, onCancel, mo
     }
 
     return (
-        <View>
+        <View style={styles.container}>
             <TextInput
                 style={styles.input}
                 placeholder="Nome"
@@ -97,11 +102,8 @@ export default function PatientForm({ initialValues = {}, onSubmit, onCancel, mo
             <TextInput
                 style={styles.input}
                 placeholder="Valor da Sessão"
-                value={sessionValue ? "R$ " + sessionValue : ""}
-                onChangeText={(text) => {
-                    const numeric = text.replace(/\D/g, "");
-                    setSessionValue(numeric);
-                }}
+                value={formatMoney(sessionValue)}
+                onChangeText={(text) => setSessionValue(text.replace(/[^0-9.,]/g, ""))}
                 keyboardType="numeric"
             />
             <View style={styles.switchRow}>
@@ -109,14 +111,14 @@ export default function PatientForm({ initialValues = {}, onSubmit, onCancel, mo
                 <Switch
                     value={isSocial}
                     onValueChange={setIsSocial}
-                    trackColor={{ false: theme.border, true: "#ECD385" }}
-                    thumbColor={"#FFFFFF"}
+                    trackColor={{ false: theme.surface, true: theme.accent }}
+                    thumbColor={theme.primary}
                 />
             </View>
 
             <TouchableOpacity style={styles.saveButton} onPress={handleSubmit}>
                 <View style={styles.buttonItems}>
-                    <Save size={25} color={theme.background} />
+                    <Save size={25} color={theme.surface} />
                     <Text style={styles.saveButtonText}>
                         {mode === "create" ? "SALVAR PACIENTE" : "SALVAR ALTERAÇÕES"}
                     </Text>
@@ -126,7 +128,7 @@ export default function PatientForm({ initialValues = {}, onSubmit, onCancel, mo
             {onCancel && (
                 <TouchableOpacity style={styles.cancelButton} onPress={onCancel}>
                     <View style={styles.buttonItems}>
-                        <X size={25} color={theme.background} />
+                        <X size={25} color={theme.surface} />
                         <Text style={styles.cancelButtonText}>CANCELAR</Text>
                     </View>
                 </TouchableOpacity>
@@ -136,7 +138,7 @@ export default function PatientForm({ initialValues = {}, onSubmit, onCancel, mo
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, padding: 20, backgroundColor: theme.background, marginLeft: 10 },
+    container: { flex: 1, backgroundColor: theme.background },
     input: {
         borderWidth: 1,
         borderColor: theme.border,
@@ -153,23 +155,29 @@ const styles = StyleSheet.create({
         marginBottom: 18,
         gap: 12,
     },
-    switchLabel: { color: theme.text },
+    switchLabel: { color: theme.text, fontSize: 16, marginLeft: 5 },
     saveButton: {
         backgroundColor: theme.primary,
-        padding: 14,
+        paddingHorizontal: 16,
+        paddingVertical: 10,
+        borderWidth: 1,
+        borderColor: theme.secondary,
         borderRadius: 8,
         alignItems: "center",
         marginTop: 8,
     },
-    saveButtonText: { color: theme.background, fontWeight: "bold", fontSize: 18, marginLeft: 5 },
+    saveButtonText: { color: theme.surface, fontWeight: "bold", fontSize: 18, marginLeft: 5 },
     cancelButton: {
         backgroundColor: theme.error,
-        padding: 14,
+        paddingHorizontal: 16,
+        paddingVertical: 10,
+        borderWidth: 1,
+        borderColor: theme.secondary,
         borderRadius: 8,
         alignItems: "center",
         marginTop: 10,
     },
-    cancelButtonText: { color: theme.background, fontWeight: "bold", fontSize: 18, marginLeft: 5 },
+    cancelButtonText: { color: theme.surface, fontWeight: "bold", fontSize: 18, marginLeft: 5 },
     buttonItems: {
         flexDirection: "row",
         alignItems: "center"

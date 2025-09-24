@@ -20,7 +20,7 @@ export default function AddPatientScreen() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>ADICIONAR PACIENTE</Text>
+            <Text style={styles.title}>Adicionar Paciente</Text>
             <PatientForm mode="create" onSubmit={handleCreate} onCancel={() => router.back()} />
         </View>
     );

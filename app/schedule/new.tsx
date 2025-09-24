@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, FlatList, Pressable, Keyboard } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { theme } from "@/theme/theme";
@@ -8,6 +8,8 @@ import { getAllPatients } from "@/services/patientService";
 import { Picker } from "@react-native-picker/picker";
 import { UserSearch, Save, X } from 'lucide-react-native';
 import Toast from "react-native-toast-message";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Patient } from "@/types/patient";
 
 
 const STATUS_OPTIONS: { label: string; value: AppointmentStatus }[] = [
@@ -28,34 +30,36 @@ export default function ScheduleNewScreen() {
         edit?: string;
     }>();
 
-    const [query, setQuery] = React.useState("");
-    const [open, setOpen] = React.useState(false);
-    const [patients, setPatients] = React.useState<Array<{ id: string; fullName: string }>>([]);
+    const [query, setQuery] = useState("");
+    const [open, setOpen] = useState(false);
+    const [patients, setPatients] = useState<Patient[]>([]);
 
-    const [form, setForm] = React.useState({
+    const [form, setForm] = useState({
         id: typeof id === "string" ? id : "",
         patientId: "",
         patientName: "",
         date: date ?? "",
         start: start ?? "",
         end: end ?? "",
-        status: "confirmed" as AppointmentStatus,
+        status: "confirmado" as AppointmentStatus,
         notes: "",
     });
 
-    React.useEffect(() => {
+    useEffect(() => {
+        AsyncStorage.getItem("@appointments_v1").then((result) => {
+            console.log("Conteúdo do storage:", result);
+        });
+    }, []);
+
+
+    useEffect(() => {
         let active = true;
         (async () => {
             // load patients with full name (name + lastName)
             try {
                 const list = await getAllPatients();
                 if (active && Array.isArray(list)) {
-                    setPatients(
-                        list.map((p: any) => ({
-                            id: String(p.id),
-                            fullName: String(`${p.name ?? ""} ${p.lastName ?? ""}`).trim(),
-                        }))
-                    );
+                    setPatients(list as Patient[])
                 }
             } catch { }
             // editing path
@@ -90,10 +94,10 @@ export default function ScheduleNewScreen() {
         setForm((f) => ({ ...f, [key]: value }));
     }
 
-    function pickPatient(p: { id: string; fullName: string }) {
+    function pickPatient(p: Patient) {
         handleChange("patientId", p.id);
-        handleChange("patientName", p.fullName);
-        setQuery(p.fullName);
+        handleChange("patientName", `${p.name} ${p.lastName}`.trim());
+        setQuery(`${p.name} ${p.lastName}`.trim());
         setOpen(false); // close dropdown
         Keyboard.dismiss();
     }
@@ -105,7 +109,7 @@ export default function ScheduleNewScreen() {
     const filtered = React.useMemo(() => {
         const q = normalize(query.trim());
         if (!q) return [];
-        return patients.filter((p) => normalize(p.fullName).includes(q));
+        return patients.filter((p) => normalize(`${p.name} ${p.lastName}`.trim()).includes(q));
     }, [patients, query]);
 
 
@@ -117,15 +121,20 @@ export default function ScheduleNewScreen() {
             Alert.alert("Campos obrigatórios", "Selecione o paciente para continuar.");
             return;
         }
+
+        const patient = patients.find(p => p.id === form.patientId);
+
         const payload: Appointment = {
             id: form.id || "",
             patientId: form.patientId.trim(),
-            patientName: form.patientName.trim(),
+            patientName: patient ? `${patient.name} ${patient.lastName}`.trim() : form.patientName.trim(),
             date: form.date,
             start: form.start,
             end: form.end,
             status: form.status,
             notes: form.notes?.trim() || undefined,
+            sessionValue: patient ? patient.sessionValue : 0,
+            isSocial: !!patient?.isSocial,
         };
         if (edit === "1" && form.id) {
             await updateAppointment(form.id, payload);
@@ -136,6 +145,8 @@ export default function ScheduleNewScreen() {
             });
 
         } else {
+            console.log("Payload do agendamento:", payload);
+
             await createAppointment(payload);
             Toast.show({
                 type: "success",
@@ -153,13 +164,13 @@ export default function ScheduleNewScreen() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>{edit === "1" ? "EDITAR AGENDAMENTO" : "NOVO AGENDAMENTO"}</Text>
+            <Text style={styles.title}>{edit === "1" ? "Editar Agendamento" : "Novo Agendamento"}</Text>
 
             {/* patient search (saves ID internally) */}
             <View style={{ marginBottom: 16 }}>
 
                 <View style={styles.searchRow}>
-                    <UserSearch size={20} color={theme.text} />
+                    <UserSearch size={20} color={theme.textLight} />
                     <TextInput
                         style={styles.searchInput}
                         placeholder="Buscar paciente por nome"
@@ -199,7 +210,7 @@ export default function ScheduleNewScreen() {
                         style={styles.suggestions}
                         renderItem={({ item }) => (
                             <Pressable onPress={() => pickPatient(item)} style={styles.suggestionItem}>
-                                <Text style={styles.suggestionText}>{item.fullName}</Text>
+                                <Text style={styles.suggestionText}>{item.name} {item.lastName}</Text>
                             </Pressable>
                         )}
                     />
@@ -276,10 +287,9 @@ export default function ScheduleNewScreen() {
                 </>
             )}
 
-
             <TouchableOpacity style={[styles.saveBtn, !canSave && { opacity: 0.5 }]} onPress={handleSave} disabled={!canSave}>
                 <View style={styles.buttonItems}>
-                    <Save size={25} color={theme.background} />
+                    <Save size={25} color={theme.surface} />
                     <Text style={styles.saveTxt}>SALVAR</Text>
                 </View>
 
@@ -287,7 +297,7 @@ export default function ScheduleNewScreen() {
 
             <TouchableOpacity style={styles.cancelBtn} onPress={() => router.back()}>
                 <View style={styles.buttonItems}>
-                    <X size={25} color={theme.background} />
+                    <X size={25} color={theme.surface} />
                     <Text style={styles.cancelTxt}>CANCELAR</Text>
                 </View>
             </TouchableOpacity>
@@ -346,32 +356,32 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: theme.border,
     },
-    suggestionText: { color: theme.text, fontWeight: "600" },
+    suggestionText: { color: theme.text, fontWeight: "bold" },
 
     // buttons
     saveBtn: {
         marginTop: 16,
         backgroundColor: theme.primary,
         borderRadius: 8,
-        paddingVertical: 12,
+        paddingVertical: 10,
         paddingHorizontal: 16,
         alignItems: "center",
         borderWidth: 1,
-        borderColor: theme.border,
+        borderColor: theme.secondary,
     },
-    saveTxt: { color: theme.background, fontWeight: "bold", fontSize: 18, marginLeft: 10 },
+    saveTxt: { color: theme.surface, fontWeight: "bold", fontSize: 18, marginLeft: 10 },
     cancelBtn: {
         marginTop: 10,
         backgroundColor: theme.error,
         borderRadius: 8,
-        paddingVertical: 12,
+        paddingVertical: 10,
         paddingHorizontal: 16,
         alignItems: "center",
         borderWidth: 1,
-        borderColor: theme.border,
+        borderColor: theme.secondary,
     },
 
-    cancelTxt: { color: theme.background, fontWeight: "bold", fontSize: 18, marginLeft: 6 },
+    cancelTxt: { color: theme.surface, fontWeight: "bold", fontSize: 18, marginLeft: 6 },
 
     input: {
         backgroundColor: theme.surface,
@@ -381,6 +391,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 12,
         paddingVertical: 12,
         color: theme.text,
+        marginBottom: 8,
     },
 
     pickerBox: {

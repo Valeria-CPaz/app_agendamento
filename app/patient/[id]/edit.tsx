@@ -33,7 +33,7 @@ export default function EditPatientScreen() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>EDITAR PACIENTE</Text>
+            <Text style={styles.title}>Editar Paciente</Text>
             <PatientForm
                 mode="edit"
                 initialValues={patient}
@@ -45,8 +45,8 @@ export default function EditPatientScreen() {
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, padding: 20, backgroundColor: theme.background, marginLeft: 10 },
-    title: { fontSize: 24, fontWeight: "bold", marginBottom: 16, color: theme.primary },
+    container: { flex: 1, padding:20, backgroundColor: theme.background },
+    title: { fontSize: 24, fontWeight: "bold", marginBottom: 16, color: theme.primary, marginLeft: 5 },
     input: {
         borderWidth: 1,
         borderColor: theme.surface,
@@ -65,12 +65,15 @@ const styles = StyleSheet.create({
     switchLabel: { marginRight: 10, color: theme.text },
     saveButton: {
         backgroundColor: theme.primary,
-        padding: 14,
+        borderWidth: 1,
+        borderColor: theme.secondary,
+        paddingHorizontal: 16,
         borderRadius: 8,
         alignItems: "center",
         marginTop: 24,
         alignSelf: "center",
         width: "100%",
+        paddingVertical: 10,
     },
     saveButtonText: {
         color: theme.surface,

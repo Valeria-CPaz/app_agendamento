@@ -1,6 +1,6 @@
 import { useFocusEffect, useRouter } from "expo-router";
 import React, { useCallback, useMemo, useState, useRef } from "react";
-import { FlatList, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View, Keyboard } from "react-native";
+import { FlatList, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View, ScrollView } from "react-native";
 import { getAllPatients } from "@/services/patientService";
 import { theme } from "@/theme/theme";
 import { Patient } from "@/types/patient";
@@ -14,10 +14,6 @@ export default function PatientsScreen() {
     const [query, setQuery] = useState("");
     const router = useRouter();
     const headerOffset = useHeaderOffset();
-
-    const listRef = useRef<FlatList<Patient>>(null);
-    const inputRef = useRef<TextInput>(null);
-
 
     // Load patients whenever this screen gains focus
     useFocusEffect(
@@ -63,7 +59,7 @@ export default function PatientsScreen() {
         <View style={[styles.container, { paddingTop: headerOffset, paddingHorizontal: 16 }]}>
             {/* Search input */}
             <View style={styles.searchRow}>
-                <UserSearch size={20} color={theme.text} />
+                <UserSearch size={20} color={theme.textLight} />
                 <TextInput
                     style={styles.searchInput}
                     placeholder="Buscar por nome"
@@ -90,11 +86,10 @@ export default function PatientsScreen() {
                 onPress={() => router.push("/patient/new")}
             >
                 <View style={styles.buttonItems}>
-                    <UserPlus size={25} color={theme.background} />
-                    <Text style={styles.addButtonText}>ADICIONAR PACIENTE</Text>
+                    <UserPlus size={25} color={theme.surface} />
+                    <Text style={styles.addButtonText}>Adicionar Paciente</Text>
                 </View>
             </TouchableOpacity>
-
 
             {/* List patients */}
             <FlatList
@@ -149,7 +144,8 @@ const styles = StyleSheet.create({
         alignItems: "center",
         backgroundColor: theme.background,
         borderRadius: 10,
-        paddingHorizontal: 12,
+        paddingHorizontal: 13,
+        paddingVertical: 1,
         marginBottom: 12,
         borderWidth: 1,
         borderColor: theme.border,
@@ -176,15 +172,18 @@ const styles = StyleSheet.create({
     },
 
     addButton: {
+        borderColor: theme.secondary,
         backgroundColor: theme.primary,
         padding: 12,
         borderRadius: 8,
+        borderWidth: 1,
         alignItems: "center",
         marginBottom: 12,
-    },       
+        paddingVertical: 10,
+    },
 
     addButtonText: {
-        color: theme.background,
+        color: theme.surface,
         fontWeight: "bold",
         fontSize: 18,
         marginLeft: 8,
@@ -237,6 +236,5 @@ const styles = StyleSheet.create({
     buttonItems: {
         flexDirection: "row",
         alignItems: "center"
-
     },
 });

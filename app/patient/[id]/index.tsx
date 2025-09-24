@@ -146,14 +146,14 @@ export default function PatientDetailScreen() {
 
             <TouchableOpacity style={styles.editButton} onPress={handleEdit}>
                 <View style={styles.buttonItems}>
-                    <UserPen size={25} color={theme.background} />
+                    <UserPen size={25} color={theme.surface} />
                     <Text style={styles.editButtonText}>EDITAR</Text>
                 </View>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.deleteButton} onPress={confirmDelete}>
                 <View style={styles.buttonItems}>
-                    <UserMinus size={25} color={theme.background}/>
+                    <UserMinus size={25} color={theme.surface}/>
                     <Text style={styles.deleteButtonText}>EXCLUIR PACIENTE</Text>
                 </View>
             </TouchableOpacity>
@@ -187,11 +187,13 @@ const styles = StyleSheet.create({
     },
     editButton: {
         backgroundColor: theme.primary,
-        paddingVertical: 12,
+        paddingVertical: 10,
         paddingHorizontal: 16,
         borderRadius: 8,
         alignItems: "center",
         marginTop: 16,
+        borderWidth: 1,
+        borderColor: theme.secondary,
     },
     editButtonText: {
         color: theme.surface,
@@ -206,11 +208,13 @@ const styles = StyleSheet.create({
     },
     deleteButton: {
         backgroundColor: theme.error,
-        paddingVertical: 12,
+        paddingVertical: 10,
         paddingHorizontal: 16,
         borderRadius: 8,
         alignItems: "center",
         marginTop: 10,
+        borderColor: theme.secondary,
+        borderWidth: 1,
     },
     deleteButtonText: {
         color: theme.surface,

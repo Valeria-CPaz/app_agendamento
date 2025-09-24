@@ -63,7 +63,7 @@ function formatRangeLabel(start: Date): string {
     return `${fmt(start)} – ${fmt(end)}`;
 }
 
-const WEEKDAYS_PT = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"];
+const WEEKDAYS_PT = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"];
 function labelForDay(d: Date): string {
     const w = WEEKDAYS_PT[d.getDay()];
     return `${w} ${String(d.getDate()).padStart(2, "0")}`;
@@ -168,7 +168,7 @@ export default function ScheduleWeekScreen() {
                     }}
                     style={styles.weekHomeBtn}
                 >
-                    <CornerDownLeft size={25} color={theme.primary} />
+                    <CornerDownLeft size={25} color={theme.secondary} />
                 </TouchableOpacity>
             </View>
 
@@ -207,7 +207,6 @@ export default function ScheduleWeekScreen() {
                         const iso = toISODate(item);
                         const count = (byDay[iso]?.length ?? 0);
                         const selected = index === selectedDayIdx;
-                        const isToday = isSameDay(item, new Date());
                         return (
                             <Pressable
                                 onPress={() => {
@@ -219,12 +218,18 @@ export default function ScheduleWeekScreen() {
                                     });
                                 }}
                             >
-                                <Text style={[styles.dayPillText, selected && styles.dayPillTextActive]}>
-                                    {labelForDay(item)}
-                                </Text>
-                                <Text style={[styles.dayCount, selected && styles.dayCountActive]}>
-                                    {count} {count <= 1 ? "sessão" : "sessões"}
-                                </Text>
+                                <View style={[styles.dayCol, selected && styles.dayColActive]}>
+                                    <Text style={[styles.dayNumber, selected && styles.dayNumberActive]}>
+                                        {String(item.getDate()).padStart(2, "0")}
+                                    </Text>
+                                    <Text style={[styles.dayWeekday, selected && styles.dayWeekdayActive]}>
+                                        {labelForDay(item).split(" ")[0]}
+                                    </Text>
+                                    <Text style={[styles.dayCount, selected && styles.dayCountActive]}>
+                                        {count} {count === 1 ? "sessão" : "sessões"}
+                                    </Text>
+                                </View>
+
                             </Pressable>
                         );
                     }}
@@ -279,7 +284,7 @@ export default function ScheduleWeekScreen() {
                                     android_ripple={{ color: "#00000011" }}
                                 >
                                     {inThisSlot.length === 0 ? (
-                                        <Text style={{ color: theme.textLight }}>Livre</Text>
+                                        <Text style={{ color: theme.accent }}>Horário Livre</Text>
                                     ) : (
                                         inThisSlot.map((a) => (
                                             <Pressable
@@ -298,9 +303,7 @@ export default function ScheduleWeekScreen() {
                                                 <Text numberOfLines={1} style={styles.apptTitle}>
                                                     {a.patientName}
                                                 </Text>
-                                                <Text style={styles.apptTime}>
-                                                    {a.start}–{a.end}
-                                                </Text>
+
                                             </Pressable>
                                         ))
                                     )}
@@ -331,6 +334,7 @@ export default function ScheduleWeekScreen() {
 
 // ===== styles =====
 const H_PADDING = 5;
+const DAY_ITEM_WIDTH = 100;
 
 const styles = StyleSheet.create({
     title: {
@@ -367,23 +371,6 @@ const styles = StyleSheet.create({
     daysFadeLeft: { position: "absolute", left: 0, top: 0, bottom: 0, width: 12, zIndex: 10 },
     daysFadeRight: { position: "absolute", right: 0, top: 0, bottom: 0, width: 12, zIndex: 10 },
 
-    dayPill: {
-        paddingHorizontal: 12,
-        paddingVertical: 8,
-        backgroundColor: theme.surface,
-        borderWidth: 1,
-        borderColor: theme.border,
-        borderRadius: 12,
-        alignItems: "center",
-        minWidth: 90,
-    },
-    dayPillActive: { backgroundColor: theme.primary, borderColor: theme.primary },
-    dayPillText: { fontSize: 18, color: theme.text, fontWeight: "600", textAlign: "center", padding: 5 },
-    dayPillTextActive: { color: theme.primary },
-    dayCount: { fontSize: 17, color: theme.textLight },
-    dayCountActive: { color: theme.primary, fontWeight: "700" },
-    dayPillToday: { borderColor: theme.primary, borderWidth: 2 },
-
     gridWrapper: { flex: 1, position: "relative", marginTop: 8 },
     gridContent: { paddingTop: 8, paddingBottom: 20 },
     fadeTop: { position: "absolute", left: 0, right: 0, top: 0, height: 22, zIndex: 10 },
@@ -397,7 +384,7 @@ const styles = StyleSheet.create({
     slotCard: {
         flex: 1,
         backgroundColor: theme.surface,
-        borderColor: theme.border,
+        borderColor: theme.secondary,
         borderWidth: 1,
         borderRadius: 12,
         paddingVertical: 12,
@@ -410,10 +397,10 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         padding: 8,
         borderColor: theme.border,
-        backgroundColor: theme.border,
+        backgroundColor: theme.surface,
         marginBottom: 6,
     },
-    apptTitle: { color: theme.text, fontWeight: "700", marginBottom: 2 },
+    apptTitle: { color: theme.textLight, fontWeight: "bold", marginBottom: 2 },
     apptTime: { color: theme.textLight, fontSize: 12 },
 
     apptConfirmed: { borderColor: theme.success },
@@ -449,5 +436,48 @@ const styles = StyleSheet.create({
         marginTop: 2,
         padding: 4,
     },
+
+    dayCol: {
+        alignItems: "center",
+        justifyContent: "center",
+        width: DAY_ITEM_WIDTH,
+        paddingVertical: 2,
+    },
+    dayColActive: {
+        backgroundColor: theme.background,
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: theme.secondary,
+    },
+    dayNumber: {
+        fontSize: 18,
+        alignItems: "center",
+        color: theme.textLight,
+        marginBottom: -2,
+    },
+    dayNumberActive: {
+        color: theme.primary,
+        fontWeight: "bold",
+    },
+    dayWeekday: {
+        fontSize: 14,
+        alignItems: "center",
+        color: theme.textLight,
+        marginBottom: 0,
+    },
+    dayWeekdayActive: {
+        color: theme.primary,
+        fontWeight: "bold",
+    },
+    dayCount: {
+        fontSize: 16,
+        color: theme.textLight,
+        marginTop: 0,
+    },
+    dayCountActive: {
+        color: theme.primary,
+        fontWeight: "bold",
+    },
+
 
 });

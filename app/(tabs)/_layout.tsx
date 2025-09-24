@@ -28,15 +28,15 @@ export default function TabLayout() {
         title={headerTitle}
         rightComponent={
           <Pressable onPress={() => alert("Logout")}>
-            <LogOut color={theme.primary} />
+            <LogOut color={theme.secondary} />
           </Pressable>
         }
       />
       <Tabs
         screenOptions={{
           headerShown: false,
-          tabBarActiveTintColor: theme.primary,
-          tabBarInactiveTintColor: theme.border,
+          tabBarActiveTintColor: theme.border,
+          tabBarInactiveTintColor: theme.secondary,
           tabBarStyle: {
             backgroundColor: theme.background,
             borderTopColor: theme.border,

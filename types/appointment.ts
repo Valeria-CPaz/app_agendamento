@@ -16,5 +16,7 @@ export interface Appointment {
     status: AppointmentStatus;
     price?: number;
     notes?: string;
+    sessionValue?: number;
+    isSocial: boolean;
 }
 
