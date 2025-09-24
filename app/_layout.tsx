@@ -1,14 +1,16 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { useColorScheme } from '@/hooks/useColorScheme';
+import { DarkTheme, DefaultTheme } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import Toast from "react-native-toast-message";
-import 'react-native-reanimated';
-import { useColorScheme } from '@/hooks/useColorScheme';
-import { theme } from "../theme/theme"
+import { useTheme, ThemeProvider } from "../context/ThemeContext";
 
 
 export default function RootLayout() {
+  // Themes
+  const theme = useTheme();
+
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
@@ -20,7 +22,7 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <ThemeProvider>
       <Stack
         screenOptions={{
           headerShown: true,

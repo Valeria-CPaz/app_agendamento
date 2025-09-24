@@ -1,15 +1,18 @@
-import React from 'react';
-import { Tabs, usePathname } from 'expo-router';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { StatusBar } from 'expo-status-bar';
-import Toast from "react-native-toast-message";
-import { theme } from '../../theme/theme';
-import { Contact, ClipboardMinus, CalendarRange, Settings, LogOut } from 'lucide-react-native';
-import { View, Pressable } from 'react-native';
 import AppHeader from '@/components/AppHeader';
+import { Tabs, usePathname } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
+import { CalendarRange, ClipboardMinus, Contact, LogOut, Settings } from 'lucide-react-native';
+import React from 'react';
+import { Pressable, View } from 'react-native';
+import Toast from "react-native-toast-message";
+import { useTheme } from "../../context/ThemeContext";
+
 
 export default function TabLayout() {
   const pathname = usePathname();
+
+  // Themes
+  const theme = useTheme();
 
   const headerTitle = React.useMemo(() => {
     if (!pathname) return "Psico App";

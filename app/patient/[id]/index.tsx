@@ -1,12 +1,15 @@
-import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
-import React, { useCallback, useState } from "react";
-import { Alert, StyleSheet, Text, TouchableOpacity, View, Pressable } from "react-native";
-import Toast from "react-native-toast-message";
-import { formatCPF, formatPhone } from "@/utils/formatters";
 import { getPatientById, removePatient } from "@/services/patientService";
-import { theme } from "@/theme/theme";
 import { Patient } from "@/types/patient";
-import { UserPen, UserMinus } from "lucide-react-native";
+import { formatCPF, formatPhone } from "@/utils/formatters";
+import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
+import { UserMinus, UserPen } from "lucide-react-native";
+import React, { useCallback, useState } from "react";
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import Toast from "react-native-toast-message";
+import { useTheme } from "../../../context/ThemeContext";
+
+
+
 
 export default function PatientDetailScreen() {
     const { id } = useLocalSearchParams();
@@ -15,6 +18,88 @@ export default function PatientDetailScreen() {
     const router = useRouter();
     const [patient, setPatient] = useState<Patient | null>(null);
     const [notFound, setNotFound] = useState(false);
+
+    // Themes
+    const theme = useTheme();
+    const styles = StyleSheet.create({
+        container: { flex: 1, padding: 20, backgroundColor: theme.background },
+        title: {
+            fontSize: 28,
+            fontWeight: "bold",
+            color: theme.primary,
+            marginBottom: 22,
+            marginLeft: 10
+        },
+        infoBlock: {
+            marginBottom: 14,
+            flexDirection: "row",
+            alignItems: "center",
+        },
+        label: {
+            fontWeight: "bold",
+            marginRight: 8,
+            color: theme.text,
+            fontSize: 16,
+        },
+        value: {
+            color: theme.textLight,
+            fontSize: 16,
+        },
+        editButton: {
+            backgroundColor: theme.primary,
+            paddingVertical: 10,
+            paddingHorizontal: 16,
+            borderRadius: 8,
+            alignItems: "center",
+            marginTop: 16,
+            borderWidth: 1,
+            borderColor: theme.secondary,
+        },
+        editButtonText: {
+            color: theme.surface,
+            fontWeight: "bold",
+            fontSize: 18,
+            marginLeft: 8,
+        },
+        editButtonContent: {
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 6,
+        },
+        deleteButton: {
+            backgroundColor: theme.error,
+            paddingVertical: 10,
+            paddingHorizontal: 16,
+            borderRadius: 8,
+            alignItems: "center",
+            marginTop: 10,
+            borderColor: theme.secondary,
+            borderWidth: 1,
+        },
+        deleteButtonText: {
+            color: theme.surface,
+            fontWeight: "bold",
+            fontSize: 18,
+            marginLeft: 8,
+        },
+        deleteButtonContent: {
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 8,
+        },
+        detailsCard: {
+            backgroundColor: theme.surface,
+            borderRadius: 12,
+            borderWidth: 1,
+            borderColor: theme.border,
+            padding: 16,
+        },
+        buttonItems: {
+            flexDirection: "row",
+            alignItems: "center"
+        },
+
+    });
 
     useFocusEffect(
         useCallback(() => {
@@ -147,96 +232,18 @@ export default function PatientDetailScreen() {
             <TouchableOpacity style={styles.editButton} onPress={handleEdit}>
                 <View style={styles.buttonItems}>
                     <UserPen size={25} color={theme.surface} />
-                    <Text style={styles.editButtonText}>EDITAR</Text>
+                    <Text style={styles.editButtonText}>Editar</Text>
                 </View>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.deleteButton} onPress={confirmDelete}>
                 <View style={styles.buttonItems}>
-                    <UserMinus size={25} color={theme.surface}/>
-                    <Text style={styles.deleteButtonText}>EXCLUIR PACIENTE</Text>
+                    <UserMinus size={25} color={theme.surface} />
+                    <Text style={styles.deleteButtonText}>Excluir Paciente</Text>
                 </View>
             </TouchableOpacity>
         </View>
     );
 }
 
-const styles = StyleSheet.create({
-    container: { flex: 1, padding: 20, backgroundColor: theme.background },
-    title: {
-        fontSize: 28,
-        fontWeight: "bold",
-        color: theme.primary,
-        marginBottom: 22,
-        marginLeft: 10
-    },
-    infoBlock: {
-        marginBottom: 14,
-        flexDirection: "row",
-        alignItems: "center",
-    },
-    label: {
-        fontWeight: "bold",
-        marginRight: 8,
-        color: theme.text,
-        fontSize: 16,
-    },
-    value: {
-        color: theme.textLight,
-        fontSize: 16,
-    },
-    editButton: {
-        backgroundColor: theme.primary,
-        paddingVertical: 10,
-        paddingHorizontal: 16,
-        borderRadius: 8,
-        alignItems: "center",
-        marginTop: 16,
-        borderWidth: 1,
-        borderColor: theme.secondary,
-    },
-    editButtonText: {
-        color: theme.surface,
-        fontWeight: "bold",
-        fontSize: 18,
-        marginLeft: 8,
-    },
-    editButtonContent: {
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 6,
-    },
-    deleteButton: {
-        backgroundColor: theme.error,
-        paddingVertical: 10,
-        paddingHorizontal: 16,
-        borderRadius: 8,
-        alignItems: "center",
-        marginTop: 10,
-        borderColor: theme.secondary,
-        borderWidth: 1,
-    },
-    deleteButtonText: {
-        color: theme.surface,
-        fontWeight: "bold",
-        fontSize: 18,
-        marginLeft: 8,
-    },
-    deleteButtonContent: {
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 8,
-    },
-    detailsCard: {
-        backgroundColor: theme.surface,
-        borderRadius: 12,
-        borderWidth: 1,
-        borderColor: theme.border,
-        padding: 16,
-    },
-    buttonItems: {
-        flexDirection: "row",
-        alignItems: "center"
-    },
 
-});

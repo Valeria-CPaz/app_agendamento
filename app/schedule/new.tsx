@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, FlatList, Pressable, Keyboard } from "react-native";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { theme } from "@/theme/theme";
-import { Appointment, AppointmentStatus } from "@/types/appointment";
 import { createAppointment, getAppointmentById, updateAppointment } from "@/services/appointmentService";
 import { getAllPatients } from "@/services/patientService";
-import { Picker } from "@react-native-picker/picker";
-import { UserSearch, Save, X } from 'lucide-react-native';
-import Toast from "react-native-toast-message";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Appointment, AppointmentStatus } from "@/types/appointment";
 import { Patient } from "@/types/patient";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Picker } from "@react-native-picker/picker";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { Save, UserSearch, X } from 'lucide-react-native';
+import React, { useEffect, useState } from "react";
+import { Alert, FlatList, Keyboard, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import Toast from "react-native-toast-message";
+import { useTheme } from "../../context/ThemeContext";
 
+  
 
 const STATUS_OPTIONS: { label: string; value: AppointmentStatus }[] = [
     { label: "Confirmado", value: "confirmado" },
@@ -44,6 +45,112 @@ export default function ScheduleNewScreen() {
         status: "confirmado" as AppointmentStatus,
         notes: "",
     });
+
+    // Themes
+    const theme = useTheme();
+    const styles = StyleSheet.create({
+        container: { flex: 1, backgroundColor: theme.background, padding: 20 },
+        title: { fontSize: 22, fontWeight: "700", color: theme.primary, marginBottom: 14, marginLeft: 10 },
+
+        label: { color: theme.text, fontSize: 14, marginTop: 10, marginBottom: 6 },
+
+        // read-only boxes
+        readonly: {
+            backgroundColor: theme.background,
+            borderWidth: 1,
+            borderColor: theme.border,
+            borderRadius: 10,
+            paddingHorizontal: 12,
+            paddingVertical: 12,
+            marginBottom: 6
+        },
+        readonlyText: { color: theme.text, fontSize: 16 },
+
+        // search box
+        searchRow: {
+            flexDirection: "row",
+            alignItems: "center",
+            backgroundColor: theme.surface,
+            borderWidth: 1,
+            borderColor: theme.border,
+            borderRadius: 10,
+            paddingHorizontal: 8,
+        },
+        searchInput: { flex: 1, paddingVertical: 10, color: theme.text, fontSize: 16 },
+        clearBtn: {
+            paddingHorizontal: 8,
+            paddingVertical: 6,
+            borderRadius: 8,
+            backgroundColor: theme.surface,
+        },
+        clearTxt: { color: theme.text, fontSize: 24, fontWeight: "bold" },
+
+        suggestions: {
+            marginTop: 6,
+            maxHeight: 180,
+            borderWidth: 1,
+            borderColor: theme.border,
+            borderRadius: 10,
+            backgroundColor: theme.surface,
+        },
+        suggestionItem: {
+            paddingHorizontal: 12,
+            paddingVertical: 10,
+            borderBottomWidth: 1,
+            borderBottomColor: theme.border,
+        },
+        suggestionText: { color: theme.text, fontWeight: "bold" },
+
+        // buttons
+        saveBtn: {
+            marginTop: 16,
+            backgroundColor: theme.primary,
+            borderRadius: 8,
+            paddingVertical: 10,
+            paddingHorizontal: 16,
+            alignItems: "center",
+            borderWidth: 1,
+            borderColor: theme.secondary,
+        },
+        saveTxt: { color: theme.surface, fontWeight: "bold", fontSize: 18, marginLeft: 10 },
+        cancelBtn: {
+            marginTop: 10,
+            backgroundColor: theme.error,
+            borderRadius: 8,
+            paddingVertical: 10,
+            paddingHorizontal: 16,
+            alignItems: "center",
+            borderWidth: 1,
+            borderColor: theme.secondary,
+        },
+
+        cancelTxt: { color: theme.surface, fontWeight: "bold", fontSize: 18, marginLeft: 6 },
+
+        input: {
+            backgroundColor: theme.surface,
+            borderWidth: 1,
+            borderColor: theme.border,
+            borderRadius: 10,
+            paddingHorizontal: 12,
+            paddingVertical: 12,
+            color: theme.text,
+            marginBottom: 8,
+        },
+
+        pickerBox: {
+            backgroundColor: theme.surface,
+            borderWidth: 1,
+            borderColor: theme.border,
+            borderRadius: 10,
+            overflow: "hidden",
+        },
+        buttonItems: {
+            flexDirection: "row",
+            alignItems: "center"
+        },
+
+    });
+
 
     useEffect(() => {
         AsyncStorage.getItem("@appointments_v1").then((result) => {
@@ -305,105 +412,4 @@ export default function ScheduleNewScreen() {
     );
 }
 
-const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: theme.background, padding: 20 },
-    title: { fontSize: 22, fontWeight: "700", color: theme.primary, marginBottom: 14, marginLeft: 10 },
 
-    label: { color: theme.text, fontSize: 14, marginTop: 10, marginBottom: 6 },
-
-    // read-only boxes
-    readonly: {
-        backgroundColor: theme.background,
-        borderWidth: 1,
-        borderColor: theme.border,
-        borderRadius: 10,
-        paddingHorizontal: 12,
-        paddingVertical: 12,
-        marginBottom: 6
-    },
-    readonlyText: { color: theme.text, fontSize: 16 },
-
-    // search box
-    searchRow: {
-        flexDirection: "row",
-        alignItems: "center",
-        backgroundColor: theme.surface,
-        borderWidth: 1,
-        borderColor: theme.border,
-        borderRadius: 10,
-        paddingHorizontal: 8,
-    },
-    searchInput: { flex: 1, paddingVertical: 10, color: theme.text, fontSize: 16 },
-    clearBtn: {
-        paddingHorizontal: 8,
-        paddingVertical: 6,
-        borderRadius: 8,
-        backgroundColor: theme.surface,
-    },
-    clearTxt: { color: theme.text, fontSize: 24, fontWeight: "bold" },
-
-    suggestions: {
-        marginTop: 6,
-        maxHeight: 180,
-        borderWidth: 1,
-        borderColor: theme.border,
-        borderRadius: 10,
-        backgroundColor: theme.surface,
-    },
-    suggestionItem: {
-        paddingHorizontal: 12,
-        paddingVertical: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: theme.border,
-    },
-    suggestionText: { color: theme.text, fontWeight: "bold" },
-
-    // buttons
-    saveBtn: {
-        marginTop: 16,
-        backgroundColor: theme.primary,
-        borderRadius: 8,
-        paddingVertical: 10,
-        paddingHorizontal: 16,
-        alignItems: "center",
-        borderWidth: 1,
-        borderColor: theme.secondary,
-    },
-    saveTxt: { color: theme.surface, fontWeight: "bold", fontSize: 18, marginLeft: 10 },
-    cancelBtn: {
-        marginTop: 10,
-        backgroundColor: theme.error,
-        borderRadius: 8,
-        paddingVertical: 10,
-        paddingHorizontal: 16,
-        alignItems: "center",
-        borderWidth: 1,
-        borderColor: theme.secondary,
-    },
-
-    cancelTxt: { color: theme.surface, fontWeight: "bold", fontSize: 18, marginLeft: 6 },
-
-    input: {
-        backgroundColor: theme.surface,
-        borderWidth: 1,
-        borderColor: theme.border,
-        borderRadius: 10,
-        paddingHorizontal: 12,
-        paddingVertical: 12,
-        color: theme.text,
-        marginBottom: 8,
-    },
-
-    pickerBox: {
-        backgroundColor: theme.surface,
-        borderWidth: 1,
-        borderColor: theme.border,
-        borderRadius: 10,
-        overflow: "hidden",
-    },
-    buttonItems: {
-        flexDirection: "row",
-        alignItems: "center"
-    },
-
-});

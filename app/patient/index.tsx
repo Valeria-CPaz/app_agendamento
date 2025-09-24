@@ -1,12 +1,13 @@
-import { useFocusEffect, useRouter } from "expo-router";
-import React, { useCallback, useMemo, useState, useRef } from "react";
-import { FlatList, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View, ScrollView } from "react-native";
+import { useHeaderOffset } from "@/lib/ui/layout";
 import { getAllPatients } from "@/services/patientService";
-import { theme } from "@/theme/theme";
 import { Patient } from "@/types/patient";
 import { capitalize, formatPhone } from "@/utils/formatters";
-import { useHeaderOffset } from "@/lib/ui/layout";
-import { UserSearch, UserPlus } from 'lucide-react-native';
+import { useFocusEffect, useRouter } from "expo-router";
+import { UserPlus, UserSearch } from 'lucide-react-native';
+import React, { useCallback, useMemo, useState } from "react";
+import { FlatList, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { useTheme } from "../../context/ThemeContext";
+
 
 
 export default function PatientsScreen() {
@@ -14,6 +15,123 @@ export default function PatientsScreen() {
     const [query, setQuery] = useState("");
     const router = useRouter();
     const headerOffset = useHeaderOffset();
+
+
+    // Themes
+    const theme = useTheme();
+    const styles = StyleSheet.create({
+        container: {
+            flex: 1,
+            backgroundColor: theme.background,
+            padding: 20,
+        },
+
+        title: {
+            flex: 1,
+            fontSize: 22,
+            fontWeight: "bold",
+            color: theme.primary,
+        },
+
+        searchRow: {
+            flexDirection: "row",
+            alignItems: "center",
+            backgroundColor: theme.background,
+            borderRadius: 10,
+            paddingHorizontal: 13,
+            paddingVertical: 1,
+            marginBottom: 12,
+            borderWidth: 1,
+            borderColor: theme.border,
+        },
+
+        searchInput: {
+            flex: 1,
+            paddingVertical: 10,
+            paddingLeft: 8,
+            fontSize: 16,
+            color: theme.text,
+            backgroundColor: theme.background,
+        },
+
+        clearBtn: {
+            paddingHorizontal: 8,
+            paddingVertical: 6,
+            borderRadius: 8,
+        },
+
+        clearTxt: {
+            fontSize: 16,
+            color: theme.textLight,
+        },
+
+        addButton: {
+            borderColor: theme.secondary,
+            backgroundColor: theme.primary,
+            padding: 12,
+            borderRadius: 8,
+            borderWidth: 1,
+            alignItems: "center",
+            marginBottom: 12,
+            paddingVertical: 10,
+        },
+
+        addButtonText: {
+            color: theme.surface,
+            fontWeight: "bold",
+            fontSize: 18,
+            marginLeft: 8,
+        },
+
+        card: {
+            //padding: 6,
+            borderRadius: 10,
+            backgroundColor: theme.surface,
+            marginBottom: 7,
+            borderWidth: 1,
+            borderColor: theme.border,
+        },
+
+        name: {
+            fontSize: 18,
+            marginTop: 7,
+            marginLeft: 12,
+            marginBottom: -10,
+            padding: 0,
+            fontWeight: "bold",
+            color: theme.text,
+        },
+
+        info: {
+            fontSize: 12,
+            color: theme.textLight,
+            alignSelf: "flex-end",
+            marginTop: -10,
+            marginRight: 12,
+            marginBottom: 10,
+            padding: 0,
+        },
+
+        empty:
+        {
+            marginTop: 40,
+            textAlign: "center",
+            color: theme.textLight
+        },
+        icon: {
+            alignSelf: "flex-start",
+            padding: 0,
+            marginTop: -17,
+            marginBottom: 0,
+            marginLeft: 65,
+            color: theme.background,
+        },
+
+        buttonItems: {
+            flexDirection: "row",
+            alignItems: "center"
+        },
+    });
 
     // Load patients whenever this screen gains focus
     useFocusEffect(
@@ -125,116 +243,3 @@ export default function PatientsScreen() {
     );
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: theme.background,
-        padding: 20,
-    },
-
-    title: {
-        flex: 1,
-        fontSize: 22,
-        fontWeight: "bold",
-        color: theme.primary,
-    },
-
-    searchRow: {
-        flexDirection: "row",
-        alignItems: "center",
-        backgroundColor: theme.background,
-        borderRadius: 10,
-        paddingHorizontal: 13,
-        paddingVertical: 1,
-        marginBottom: 12,
-        borderWidth: 1,
-        borderColor: theme.border,
-    },
-
-    searchInput: {
-        flex: 1,
-        paddingVertical: 10,
-        paddingLeft: 8,
-        fontSize: 16,
-        color: theme.text,
-        backgroundColor: theme.background,
-    },
-
-    clearBtn: {
-        paddingHorizontal: 8,
-        paddingVertical: 6,
-        borderRadius: 8,
-    },
-
-    clearTxt: {
-        fontSize: 16,
-        color: theme.textLight,
-    },
-
-    addButton: {
-        borderColor: theme.secondary,
-        backgroundColor: theme.primary,
-        padding: 12,
-        borderRadius: 8,
-        borderWidth: 1,
-        alignItems: "center",
-        marginBottom: 12,
-        paddingVertical: 10,
-    },
-
-    addButtonText: {
-        color: theme.surface,
-        fontWeight: "bold",
-        fontSize: 18,
-        marginLeft: 8,
-    },
-
-    card: {
-        //padding: 6,
-        borderRadius: 10,
-        backgroundColor: theme.surface,
-        marginBottom: 7,
-        borderWidth: 1,
-        borderColor: theme.border,
-    },
-
-    name: {
-        fontSize: 18,
-        marginTop: 7,
-        marginLeft: 12,
-        marginBottom: -10,
-        padding: 0,
-        fontWeight: "bold",
-        color: theme.text,
-    },
-
-    info: {
-        fontSize: 12,
-        color: theme.textLight,
-        alignSelf: "flex-end",
-        marginTop: -10,
-        marginRight: 12,
-        marginBottom: 10,
-        padding: 0,
-    },
-
-    empty:
-    {
-        marginTop: 40,
-        textAlign: "center",
-        color: theme.textLight
-    },
-    icon: {
-        alignSelf: "flex-start",
-        padding: 0,
-        marginTop: -17,
-        marginBottom: 0,
-        marginLeft: 65,
-        color: theme.background,
-    },
-
-    buttonItems: {
-        flexDirection: "row",
-        alignItems: "center"
-    },
-});

@@ -1,3 +1,5 @@
+import { Appointment } from "@/types/appointment";
+import { Patient } from "@/types/patient";
 import {
     BasicKpis,
     kpiOptions,
@@ -111,4 +113,34 @@ export function computeRevenueByPriceType<T>(items: T[], opts: RevenueOpts<T>): 
         fullAvgTicket,
     };
 
+}
+
+export function computeByPatient(appointments: Appointment[], patients: Patient[]) {
+    const byPatient: Record<string, {
+        patientId: string;
+        name: string;
+        isSocial: boolean;
+        totalSessions: number;
+        totalAmount: number;
+    }> = {};
+
+    for (const a of appointments) {
+        if (!a.patientId) continue;
+        const patient = patients.find(p => p.id === a.patientId);
+
+        if (!byPatient[a.patientId]) {
+            byPatient[a.patientId] = {
+                patientId: a.patientId,
+                name: patient ? `${patient.name} ${patient.lastName ?? ""}`.trim() : "(Sem nome)",
+                isSocial: !!patient?.isSocial,
+                totalSessions: 0,
+                totalAmount: 0,
+            };
+        }
+
+        byPatient[a.patientId].totalSessions += 1;
+        byPatient[a.patientId].totalAmount += patient?.sessionValue ?? 0;
+    }
+
+    return Object.values(byPatient).sort((a, b) => a.name.localeCompare(b.name));
 }

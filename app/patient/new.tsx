@@ -1,15 +1,22 @@
-import { useRouter } from "expo-router";
-import React, { useState } from "react";
-import { StyleSheet, Switch, Text, TextInput, TouchableOpacity, View } from "react-native";
-import Toast from "react-native-toast-message";
-import { addPatient } from "@/services/patientService";
-import { theme } from "@/theme/theme";
-import { Patient } from "@/types/patient";
 import PatientForm from "@/components/PatientForm";
+import { addPatient } from "@/services/patientService";
+import { Patient } from "@/types/patient";
+import { useRouter } from "expo-router";
+import React from "react";
+import { StyleSheet, Text, View } from "react-native";
+import Toast from "react-native-toast-message";
+import { useTheme } from "../../context/ThemeContext";
 
 
 export default function AddPatientScreen() {
     const router = useRouter();
+    // Themes
+    const theme = useTheme();
+    const styles = StyleSheet.create({
+        container: { flex: 1, padding: 20, backgroundColor: theme.background },
+        title: { fontSize: 24, fontWeight: "bold", marginBottom: 16, color: theme.primary, marginLeft: 10 },
+    });
+
 
     async function handleCreate(newPatient: Patient) {
         await addPatient(newPatient);
@@ -27,9 +34,5 @@ export default function AddPatientScreen() {
 }
 
 
-const styles = StyleSheet.create({
-    container: { flex: 1, padding: 20, backgroundColor: theme.background },
-    title: { fontSize: 24, fontWeight: "bold", marginBottom: 16, color: theme.primary, marginLeft: 10 },   
-});
 
 
