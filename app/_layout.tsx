@@ -3,6 +3,7 @@ import { DarkTheme, DefaultTheme } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import Toast from "react-native-toast-message";
 import { useTheme, ThemeProvider } from "../context/ThemeContext";
 
@@ -22,13 +23,14 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider>
-      <Stack
-        screenOptions={{
-          headerShown: true,
-          headerStyle: { backgroundColor: theme.background },
-          headerTintColor: theme.primary,
-          headerTitleStyle: { fontWeight: "700" },
+    <SafeAreaProvider>
+      <ThemeProvider>
+        <Stack
+          screenOptions={{
+            headerShown: true,
+            headerStyle: { backgroundColor: theme.background },
+            headerTintColor: theme.primary,
+            headerTitleStyle: { fontWeight: "700" },
           headerShadowVisible: false,
           contentStyle: { backgroundColor: theme.surface },
         }}
@@ -71,10 +73,11 @@ export default function RootLayout() {
           }}
         />
 
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="dark" backgroundColor={theme.background} />
-      <Toast />
-    </ThemeProvider>
+          <Stack.Screen name="+not-found" />
+        </Stack>
+        <StatusBar style="dark" backgroundColor={theme.background} />
+        <Toast />
+      </ThemeProvider>
+    </SafeAreaProvider>
   );
 }
