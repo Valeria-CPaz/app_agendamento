@@ -13,7 +13,7 @@ type AppHeaderProps = {
 };
 
 
-export default function AppHeader({ title = "Psico App", rightComponent, leftComponent }: AppHeaderProps) {
+export default function AppHeader({ title = "PsicoApp", rightComponent, leftComponent }: AppHeaderProps) {
   // Themes
   const theme = useTheme();
   const styles = StyleSheet.create({

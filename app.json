@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "app-agendamento",
-    "slug": "app-agendamento",
-    "version": "1.0.0",
+    "name": "psico-app",
+    "slug": "psico-app",
+    "version": "0.0.1",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "appagendamento",
+    "scheme": "psicoapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
