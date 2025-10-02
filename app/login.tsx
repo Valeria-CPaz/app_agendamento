@@ -66,7 +66,7 @@ export default function LoginScreen() {
             }
             if (email.trim() === settings.email && password === settings.password) {
                 Toast.show({ type: "success", text1: "Bem-vinda(o) de volta!" });
-                router.replace("./(tabs)/patients");
+                router.replace("/(tabs)/patients");
             } else {
                 Toast.show({ type: "error", text1: "E-mail ou senha inválidos.", position: "bottom" });
             }
